@@ -1,0 +1,91 @@
+{
+  "config": {
+    "name": "测试用例-2",
+    "base_url": "http://192.168.100.123:80",
+    "variables": {
+      "AAA": "BBB"
+    }
+  },
+  "teststeps": [
+    {
+      "name": "登录",
+      "request": {
+        "url": "/iptv/public/index.php/api/login/checkLogin",
+        "method": "POST",
+        "data": {
+          "UserName": "$userName",
+          "UserPassword": "$userPassword"
+        }
+      },
+      "extract": [
+        {
+          "m_token": "content.token"
+        },
+        {
+          "m_cookie": "headers.Set-Cookie"
+        }
+      ],
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg.UserID",
+            "SuperA"
+          ]
+        }
+      ]
+    },
+   {
+      "name": "新建一个新账号+角色",
+      "times": 20,
+      "request": {
+        "url": "/iptv/public/index.php/api/user/userInsert",
+        "method": "POST",
+        "data": {
+          "RegionID": "$RegionID",
+          "UserName": "${get_userName()}",
+          "UserPassword": "${get_userPassword()}",
+          "RoleID": "Users",
+          "OrganID[0]": "/",
+          "UserDesc": "",
+          "Status": "1",
+          "Phone": "",
+          "Telephone": "",
+          "MailBox": "",
+          "WeChat": "1",
+          "Address": "",
+          "ExpirationTime": "2023-02-21",
+          "ConnectionLimit": "4",
+          "PlayRoutes": "4",
+          "IP": ""
+        },
+        "headers": {
+          "Cookie": "$m_cookie",
+          "token": "$m_token"
+        }
+      },
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg",
+            "操作成功"
+          ]
+        }
+      ],
+      "teardown_hooks": [
+        "${sleep($response,2)}"
+      ]
+    }
+  ]
+}

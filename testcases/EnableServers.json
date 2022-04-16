@@ -1,0 +1,107 @@
+{
+  "config": {
+    "name": "测试用例-启用禁用服务",
+    "base_url": "http://192.168.100.123:80"
+  },
+  "teststeps": [
+    {
+      "name": "登录",
+      "request": {
+        "url": "/iptv/public/index.php/api/login/checkLogin",
+        "method": "POST",
+        "data": {
+          "UserName": "$userName",
+          "UserPassword": "$userPassword"
+        }
+      },
+      "extract": [
+        {
+          "m_token": "content.token"
+        },
+        {
+          "m_cookie": "headers.Set-Cookie"
+        }
+      ],
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg.UserID",
+            "SuperA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "$ServerName:下线",
+      "request": {
+        "url": "/iptv/public/index.php/api/service/isLine",
+        "method": "POST",
+        "data": {
+          "ID": "$ServerID",
+          "Status": "0",
+          "RegionID": "$RegionID"
+        },
+        "headers": {
+          "Cookie": "$m_cookie",
+          "token": "$m_token"
+        }
+      },
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg",
+            "成功"
+          ]
+        }
+      ],
+      "teardown_hooks": [
+        "${sleep($response,1)}"
+      ]
+    },
+    {
+      "name": "$ServerName:上线",
+      "request": {
+        "url": "/iptv/public/index.php/api/service/isLine",
+        "method": "POST",
+        "data": {
+          "ID": "$ServerID",
+          "Status": "1",
+          "RegionID": "$RegionID"
+        },
+        "headers": {
+          "Cookie": "$m_cookie",
+          "token": "$m_token"
+        }
+      },
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg",
+            "成功"
+          ]
+        }
+      ],
+      "teardown_hooks": [
+        "${sleep($response,1)}"
+      ]
+    }
+  ]
+}   

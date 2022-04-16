@@ -1,0 +1,104 @@
+{
+  "config": {
+    "name": "测试用例-新建编码器",
+    "base_url": "http://192.168.100.123:80",
+    "variables": {
+      "AAA": "BBB"
+    }
+  },
+  "teststeps": [
+    {
+      "name": "登录",
+      "request": {
+        "url": "/iptv/public/index.php/api/login/checkLogin",
+        "method": "POST",
+        "data": {
+          "UserName": "$userName",
+          "UserPassword": "$userPassword"
+        }
+      },
+      "extract": [
+        {
+          "m_token": "content.token"
+        },
+        {
+          "m_cookie": "headers.Set-Cookie"
+        }
+      ],
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg.UserID",
+            "SuperA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "新建一个型号为RS3001X1的单路编码器",
+      "times": 20,
+      "request": {
+        "url": "/iptv/public/index.php/api/device/codecInsert",
+        "method": "POST",
+        "data": {
+          "RegionID": "$RegionID",
+          "DeviceName": "BW-En-${get_DeviceName()}",
+          "DeviceTypeID": "1",
+          "FirmID": "1",
+          "DeviceVersion": "2",
+          "DeviceNumber": "",
+          "JoinServer": "56E91F3C-A88F-BB15-434B-7A7E531AS0DA",
+          "DeviceDesc": "",
+          "DeviceLocationDesc": "",
+          "OrganID[0]": "/",
+          "Enable": "1",
+          "AutoCreatePeripheral": "1",
+          "DeviceParams": "{\"Agreement\":\"RS3001\"}",
+          "DeviceIP": "${get_random_ip()}",
+          "NTPIP": "",
+          "HttpPort": "80",
+          "TimeSynchronization": "1",
+          "STPPort": "5060",
+          "DeviceUser": "admin",
+          "autoAssignedAddress": "1",
+          "DevicePassword": "admin",
+          "SourceIP": "${get_random_ip()}",
+          "EncoderChannel[0][EncoderChannel]": "1",
+          "EncoderChannel[0][InTransportProtocol]": "RTP组播",
+          "EncoderChannel[0][AnchorAddress]": "${get_random_multicast_ip()}",
+          "EncoderChannel[0][AnchorPort]": "60001",
+          "EncoderChannel[0][Status]": "false",
+          "EncoderChannel[0][Params]": "{\"resolution\":\"1920*1080\",\"bitrate\":\"3000\",\"fps\":\"25\",\"contrast\":\"50\",\"luma\":\"50\",\"hue\":\"50\",\"saturation\":\"50\"}",
+          "DecoderChannel": ""
+        },
+        "headers": {
+          "Cookie": "$m_cookie",
+          "token": "$m_token"
+        }
+      },
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg",
+            "操作成功"
+          ]
+        }
+      ],
+      "teardown_hooks": [
+        "${sleep($response,2)}"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "config": {
+    "name": "测试用例-启用禁用主设",
+    "base_url": "http://192.168.100.123:80"
+  },
+  "teststeps": [
+    {
+      "name": "登录",
+      "request": {
+        "url": "/iptv/public/index.php/api/login/checkLogin",
+        "method": "POST",
+        "data": {
+          "UserName": "$userName",
+          "UserPassword": "$userPassword"
+        }
+      },
+      "extract": [
+        {
+          "m_token": "content.token"
+        },
+        {
+          "m_cookie": "headers.Set-Cookie"
+        }
+      ],
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg.UserID",
+            "SuperA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "禁用: $DeviceName",
+      "request": {
+        "url": "/iptv/public/index.php/api/device/resourceStatus",
+        "method": "POST",
+        "data": {
+          "ID": "$DeviceID",
+          "Status": "0",
+          "RegionID": "$RegionID",
+          "Class": "Codec"
+        },
+        "headers": {
+          "Cookie": "$m_cookie",
+          "token": "$m_token"
+        }
+      },
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg",
+            "成功"
+          ]
+        }
+      ],
+      "teardown_hooks": [
+        "${sleep($response,1)}"
+      ]
+    },
+    {
+     "name": "启用: $DeviceName",
+      "request": {
+        "url": "/iptv/public/index.php/api/device/resourceStatus",
+        "method": "POST",
+        "data": {
+          "ID": "$DeviceID",
+          "Status": "1",
+          "RegionID": "$RegionID",
+          "Class": "Codec"
+        },
+        "headers": {
+          "Cookie": "$m_cookie",
+          "token": "$m_token"
+        }
+      },
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg",
+            "成功"
+          ]
+        }
+      ],
+      "teardown_hooks": [
+        "${sleep($response,1)}"
+      ]
+    }
+  ]
+}

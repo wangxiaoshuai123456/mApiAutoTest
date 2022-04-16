@@ -1,0 +1,129 @@
+{
+  "config": {
+    "name": "测试用例-新建解码器",
+    "base_url": "http://192.168.100.123:80",
+    "variables": {
+      "AAA": "BBB"
+    }
+  },
+  "teststeps": [
+    {
+      "name": "登录",
+      "request": {
+        "url": "/iptv/public/index.php/api/login/checkLogin",
+        "method": "POST",
+        "data": {
+          "UserName": "$userName",
+          "UserPassword": "$userPassword"
+        }
+      },
+      "extract": [
+        {
+          "m_token": "content.token"
+        },
+        {
+          "m_cookie": "headers.Set-Cookie"
+        }
+      ],
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg.UserID",
+            "SuperA"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "新建一个型号为RS3002X8的8路解码器",
+      "times": 20,
+      "request": {
+        "url": "/iptv/public/index.php/api/device/codecInsert",
+        "method": "POST",
+        "data": {
+          "RegionID": "$RegionID",
+          "DeviceName": "BW-De-${get_DeviceName()}",
+          "DeviceTypeID": "2",
+          "FirmID": "1",
+          "DeviceVersion": "8",
+          "DeviceNumber": "",
+          "JoinServer": "56E91F3C-A88F-BB15-434B-7A7E531AS0DA",
+          "DeviceDesc": "",
+          "DeviceLocationDesc": "",
+          "OrganID[0]": "/",
+          "Enable": "1",
+          "AutoCreatePeripheral": "1",
+          "DeviceParams": "{\"Agreement\":\"RS3002\"}",
+          "DeviceIP": "${get_random_ip()}",
+          "NTPIP": "",
+          "HttpPort": "80",
+          "TimeSynchronization": "1",
+          "STPPort": "5060",
+          "DeviceUser": "admin",
+          "DevicePassword": "admin",
+          "SourceIP": "${get_random_ip()}",
+          "EncoderChannel": "",
+          "DecoderChannel[0][DecoderChannel]": "1",
+          "DecoderChannel[0][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[0][Status]": "false",
+          "DecoderChannel[0][Params]": "{\"resolution\":\"1080i 50Hz\"}",
+          "DecoderChannel[1][DecoderChannel]": "2",
+          "DecoderChannel[1][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[1][Status]": "false",
+          "DecoderChannel[1][Params]": "{\"resolution\":\"1080i 50Hz\"}",
+          "DecoderChannel[2][DecoderChannel]": "3",
+          "DecoderChannel[2][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[2][Status]": "false",
+          "DecoderChannel[2][Params]": "{\"resolution\":\"1080i 50Hz\"}",
+          "DecoderChannel[3][DecoderChannel]": "4",
+          "DecoderChannel[3][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[3][Status]": "false",
+          "DecoderChannel[3][Params]": "{\"resolution\":\"1080i 50Hz\"}",
+          "DecoderChannel[4][DecoderChannel]": "5",
+          "DecoderChannel[4][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[4][Status]": "false",
+          "DecoderChannel[4][Params]": "{\"resolution\":\"1080i 50Hz\"}",
+          "DecoderChannel[5][DecoderChannel]": "6",
+          "DecoderChannel[5][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[5][Status]": "false",
+          "DecoderChannel[5][Params]": "{\"resolution\":\"1080i 50Hz\"}",
+          "DecoderChannel[6][DecoderChannel]": "7",
+          "DecoderChannel[6][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[6][Status]": "false",
+          "DecoderChannel[6][Params]": "{\"resolution\":\"1080i 50Hz\"}",
+          "DecoderChannel[7][DecoderChannel]": "7",
+          "DecoderChannel[7][InTransportProtocol]": "RTP组播",
+          "DecoderChannel[7][Status]": "false",
+          "DecoderChannel[7][Params]": "{\"resolution\":\"1080i 50Hz\"}"
+        },
+        "headers": {
+          "Cookie": "$m_cookie",
+          "token": "$m_token"
+        }
+      },
+      "validate": [
+        {
+          "eq": [
+            "content.code",
+            "200"
+          ]
+        },
+        {
+          "contains": [
+            "content.msg",
+            "操作成功"
+          ]
+        }
+      ],
+      "teardown_hooks": [
+        "${sleep($response,2)}"
+      ]
+    }
+  ]
+}

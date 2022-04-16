@@ -1,0 +1,74 @@
+{
+  "config": {
+    "name": "测试用例套件模板",
+    "variables": {
+      "userName": "administrator",
+      "userPassword": "123456",
+      "RegionID": "JS002"
+    }
+  },
+  "testcases": [
+    {
+      "name": "启用禁用服务-1",
+      "testcase": "testcases/EnableServers.json",
+      "parameters": {
+        "ServerName-ServerID": [
+          [
+            "中心管理服务",
+            "46E91F3C-A88F-BB15-434B-7A7E531AS0DE"
+          ],
+          [
+            "北清外域服务",
+            "190EE6CC-9100-0CC5-0A1E-C0FEDF7C402A"
+          ],
+          [
+            "录像存储服务",
+            "3FE91F3C-A88F-BB15-434B-7A7E531AS0DF"
+          ],
+          [
+            "外域管理服务",
+            "46E91F3C-A88F-BB15-434B-7A7E531AD0DE"
+          ],
+          [
+            "设备接入服务",
+            "56E91F3C-A88F-BB15-434B-7A7E531AS0DA"
+          ],
+          [
+            "媒体转发服务",
+            "610EE6CC-9100-0CC5-0A1E-C0FEDF7C4C5A"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "新建账号和角色-2",
+      "testcase": "testcases/NewUserRole.json"
+    },
+    {
+      "name": "新建编码器-3",
+      "testcase": "testcases/NewEncodec.json",
+      "parameters": {
+      }
+    },
+    {
+      "name": "新建解码器-4",
+      "testcase": "testcases/NewDecodec.json",
+      "parameters": {
+      }
+    },
+     {
+      "name": "新建IPC-5",
+      "testcase": "testcases/NewIPCs.json",
+      "parameters": {
+      }
+    },
+    {
+      "name": "启用禁用主设-6",
+      "testcase": "testcases/EnableCodecs.json",
+      "parameters": {
+        "DeviceName-DeviceID": "${P(data/CodecID.csv)}"
+      }
+    }
+  ]
+}
+
